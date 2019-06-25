@@ -1,16 +1,64 @@
-import tensorflow as tf
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import os
+import glob
+import csv
+import random
+import tensorflow as tf
 
-mnist = tf.keras.datasets.mnist
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet/"
 
-x_train = tf.keras.utils.normalize(x_train, axis=1)
-x_test = tf.keras.utils.normalize(x_test, axis=1)
+data_set = []
 
-plt.imshow(x_train[0])
-#print(x_train[0])
-#plt.show()
+files = glob.glob(training_directory+"ACT7*.csv")
+for file in files:
+    print(file)
+    with open(file, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        next(reader) #skipping header line
+        for row in reader:
+            #print(str(row[1]))
+            if str(row[1])[0] != '-':
+                label = int(str(row[1])[0])
+                data_set.append([row[2:],label])
+
+random.shuffle(data_set)
+
+print(len(data_set))
+features_length = len(data_set[0][0])
+print(features_length)
+
+training_set = data_set[:int(len(data_set)/2)]
+test_set = data_set[int(len(data_set)/2):]
+
+features_train = []
+labels_train = []
+for features, labels in training_set:
+    features_train.append(features)
+    labels_train.append(labels)
+
+features_test = []
+labels_test = []
+for features, labels in test_set:
+    features_test.append(features)
+    labels_test.append(labels)
+
+features_train = np.array(features_train)
+features_train = features_train.reshape(-1, 1, features_length)
+features_train = features_train.astype(float)
+labels_train = np.array(labels_train)
+labels_train = labels_train.astype(float)
+
+features_test = np.array(features_test)
+features_test = features_test.reshape(-1, 1, features_length)
+features_test = features_test.astype(float)
+labels_test = np.array(labels_test)
+labels_test = labels_test.astype(float)
+
+print("features_train type= " + str(type(features_train)))
+print("features_train shape= " + str(features_train.shape))
+print("labels_train type= " + str(type(labels_train)))
+print("labels_train shape= " + str(labels_train.shape))
 
 model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.Flatten())
@@ -22,20 +70,12 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-print("x_train type= " + str(type(x_train)))
-print("x_train shape= " + str(x_train.shape))
-print("y_train type= " + str(type(y_train)))
-print("y_train shape= " + str(y_train.shape))
-#x_train = x_train.reshape(-1,1,28*28)
+model.fit(features_train, labels_train, epochs=10)
 
-model.fit(x_train, y_train, epochs=3)
-
-#val_loss, val_acc = model.evaluate(x_test, y_test)
-#print(val_loss)
-#print(val_acc)
-
-model.save('epic_num_reader.model')
-new_model = tf.keras.models.load_model('epic_num_reader.model')
-predictions = new_model.predict(x_test)
+model.save('merck.model')
+new_model = tf.keras.models.load_model('merck.model')
+predictions = new_model.predict(features_test)
 
 print(np.argmax(predictions[0]))
+print("DONE!!!!")
+print(features_length)
