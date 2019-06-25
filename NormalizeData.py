@@ -41,7 +41,7 @@ for file in files:
             molecule_name = row[0][row[0].find("M_")+2:]
             print(molecule_name)
             if molecule_name not in feature_dict:
-                feature_dict.update([molecule_name, blank_feature_list])
+                feature_dict.update({molecule_name : blank_feature_list})
             for i in range(len(row)-2):
                 feature_name = header[i]
                 feature_dict[molecule_name][feature_dict[feature_name]] = row[i+2]
