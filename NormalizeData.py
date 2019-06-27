@@ -29,7 +29,7 @@ for file in files:
         header_novel_zip = zip(header_novel, header_novel_values)
         feature_dict.update(dict(header_novel_zip))
 
-fileObject = open(training_directory+"feature_dict",'wb') # open the file for writing
+fileObject = open(training_directory+"feature_dict.pickle",'wb') # open the file for writing
 pickle.dump(feature_dict,fileObject)
 fileObject.close()
 
@@ -56,7 +56,7 @@ for file in files:
             for i in range(len(row)-2):
                 feature_name = header[i]
                 molecule_dict[molecule_name][0][feature_dict[feature_name]] = row[i+2]
-fileObject = open(training_directory+"molecule_dict",'wb') # open the file for writing
+fileObject = open(training_directory+"molecule_dict.pickle",'wb') # open the file for writing
 pickle.dump(molecule_dict,fileObject)
 fileObject.close()
 print("DONE!")
