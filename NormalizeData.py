@@ -56,5 +56,7 @@ for file in files:
             for i in range(len(row)-2):
                 feature_name = header[i]
                 molecule_dict[molecule_name][0][feature_dict[feature_name]] = row[i+2]
-
-print("done!")
+fileObject = open(training_directory+"molecule_dict",'wb') # open the file for writing
+pickle.dump(molecule_dict,fileObject)
+fileObject.close()
+print("DONE!")
