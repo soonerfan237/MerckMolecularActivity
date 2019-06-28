@@ -4,13 +4,13 @@ import NeuralNet
 
 def main():
 
-    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet2/"
+    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet/"
 
     NormalizeData.NormalizeData(data_directory)
 
     FindFeatures.FindFeatures(data_directory)
 
-    for i in [4,5]:
+    for i in range(1,16):
         NeuralNet.NeuralNet(data_directory,i) #integer corresponds to activity number to predict
 
 main()

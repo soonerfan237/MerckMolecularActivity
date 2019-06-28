@@ -56,18 +56,17 @@ def NormalizeData(data_directory):
                 for i in range(len(row)-2):
                     feature_name = header[i]
                     molecule_dict[molecule_name][0][feature_dict[feature_name]] = row[i+2]
-    fileObject = open(data_directory+"molecule_dict.pickle",'wb') # open the file for writing
-    pickle.dump(molecule_dict,fileObject)
-    fileObject.close()
 
+    print("SAVING molecule dictionary to file")
     feature_list = []
     for feature, value in feature_dict.items():
         feature_list.append(feature)
 
     with open(data_directory+"molecule_dict.csv", mode='w') as molecule_dict_csv:
         molecule_dict_csv_writer = csv.writer(molecule_dict_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        molecule_dict_csv_writer.writerow(feature_list)
+        header_activity_list = ["ACT0","ACT1","ACT2","ACT3","ACT4","ACT5","ACT6","ACT7","ACT8","ACT9","ACT10","ACT11","ACT12","ACT13","ACT14","ACT15"]
+        molecule_dict_csv_writer.writerow(["molecule"]+header_activity_list+feature_list)
         for molecule, features in molecule_dict.items():
-            molecule_dict_csv_writer.writerow(features[0])
+            molecule_dict_csv_writer.writerow([molecule]+features[1]+features[0])
 
     print("DONE!")

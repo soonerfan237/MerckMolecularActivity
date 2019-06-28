@@ -1,5 +1,5 @@
 #import glob
-#import csv
+import csv
 import pickle
 import numpy as np
 from statistics import mean
@@ -11,14 +11,30 @@ def FindFeatures(data_directory):
     fileObject = open(data_directory+"feature_dict.pickle",'rb')
     feature_dict = pickle.load(fileObject)
     fileObject.close()
+    print("# OF FEATURES: " + str(len(feature_dict)))
+
+    molecule_dict = {}
+    with open(data_directory+"molecule_dict.csv", newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        header = next(reader)[1:]  # skipping header line
+        for i in range(len(header)):
+            for row in reader:
+                molecule_name = row[0]
+                molecule_activity = row[1:16]
+                molecule_features = row[17:]
+                print("# OF FEATURES FROM CSV: " + str(len(feature_dict)))
+                molecule_dict.update({molecule_name : [molecule_features,molecule_activity]})
 
     feature_dict_stdev = {}
     for feature, index in feature_dict.items():
         if feature not in feature_dict_stdev:
             feature_dict_stdev.update({feature: [index]})
 
-    fileObject = open(data_directory+"molecule_dict.pickle",'rb')
+    fileObject = open(data_directory+"molecule_dict1.pickle",'rb')
     molecule_dict = pickle.load(fileObject)
+    fileObject.close()
+    fileObject = open(data_directory + "molecule_dict2.pickle", 'rb')
+    molecule_dict.update(pickle.load(fileObject))
     fileObject.close()
 
     #the idea here is for each feature, to get a list of all values

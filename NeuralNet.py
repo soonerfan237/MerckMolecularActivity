@@ -71,7 +71,7 @@ def NeuralNet(data_directory, activity_to_predict):
 
     model.fit(features_train, labels_train, epochs=10)
 
-    model.save('merck.model')
+    model.save("merck"+str(activity_to_predict)+".model")
     new_model = tf.keras.models.load_model('merck.model')
     predictions = new_model.predict(features_test)
 
