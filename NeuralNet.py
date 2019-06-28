@@ -1,26 +1,24 @@
 import numpy as np
-#import matplotlib.pyplot as plt
 #import os
+import pickle
 import glob
 import csv
 import random
 import tensorflow as tf
 
-training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet/"
+training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
+
+fileObject = open(training_directory+"molecule_dict_filter.pickle",'rb')
+molecule_dict_filter = pickle.load(fileObject)
+fileObject.close()
 
 data_set = []
-
-files = glob.glob(training_directory+"ACT7*.csv")
-for file in files:
-    print(file)
-    with open(file, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        next(reader) #skipping header line
-        for row in reader:
-            #print(str(row[1]))
-            if str(row[1])[0] != '-':
-                label = int(str(row[1])[0])
-                data_set.append([row[2:],label])
+for molecule, values in molecule_dict_filter.items():
+    if values[1][4] is not None: #TODO: this is hardcoded to the 4th activity dataset. add support for other activities
+        if str(values[1][4])[0] != '-': #TODO: handle negative activity levels
+            label = int(str(values[1][4])[0]) #TODO: come up with better grouping instead of just taking first digit
+            data = values[0]
+            data_set.append([data,label])
 
 random.shuffle(data_set)
 
@@ -76,6 +74,6 @@ model.save('merck.model')
 new_model = tf.keras.models.load_model('merck.model')
 predictions = new_model.predict(features_test)
 
-print(np.argmax(predictions[0]))
+print("REAL VALUE: " + str(data_set[0][1]))
+print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
 print("DONE!!!!")
-print(features_length)

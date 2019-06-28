@@ -59,4 +59,15 @@ for file in files:
 fileObject = open(training_directory+"molecule_dict.pickle",'wb') # open the file for writing
 pickle.dump(molecule_dict,fileObject)
 fileObject.close()
+
+feature_list = []
+for feature, value in feature_dict.items():
+    feature_list.append(feature)
+
+with open(training_directory+"molecule_dict.csv", mode='w') as molecule_dict_csv:
+    molecule_dict_csv_writer = csv.writer(molecule_dict_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    molecule_dict_csv_writer.writerow(feature_list)
+    for molecule, features in molecule_dict.items():
+        molecule_dict_csv_writer.writerow(features[0])
+
 print("DONE!")
