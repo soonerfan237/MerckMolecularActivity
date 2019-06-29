@@ -5,6 +5,8 @@ import glob
 import csv
 import random
 import tensorflow as tf
+import sklearn
+from sklearn.metrics import r2_score
 
 def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
@@ -64,8 +66,8 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #model.add(tf.keras.Input(tensor=features_train))
     #model.add(tf.keras.InputLayer(input_tensor=features_train))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
@@ -75,7 +77,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=100)
+    model.fit(features_train, labels_train, epochs=50)
 
     model.save("merck"+str(activity_to_predict)+".model")
     new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")
@@ -84,7 +86,15 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     print("REAL VALUE: " + str(labels_test[0]))
     print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
 
+    y_pred = []
     for i in range(0,len(labels_test)):
         print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
-        #print("PREDICTED: " + str(np.argmax(predictions[0])))
+        y_pred.append(np.argmax(predictions[i]))
+
+    y_true = np.array(labels_test)
+    y_true.astype(float)
+    y_pred = np.array(y_pred)
+    y_pred.astype(float)
+    r_squared = r2_score(y_true, y_pred)
+    print("R2 = " + str(r_squared))
     print("DONE!!!!")
