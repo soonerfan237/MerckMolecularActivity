@@ -15,7 +15,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
 
     data_set = []
     for molecule, values in molecule_dict_filter.items():
-        if values[1][activity_to_predict] is not None: #TODO: this is hardcoded to the 4th activity dataset. add support for other activities
+        if values[1][activity_to_predict] is not None:
             if str(values[1][activity_to_predict])[0] != '-': #TODO: handle negative activity levels
                 label = int(str(values[1][activity_to_predict])[0]) #TODO: come up with better grouping instead of just taking first digit
                 data = values[0]
@@ -81,6 +81,10 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")
     predictions = new_model.predict(features_test)
 
-    print("REAL VALUE: " + str(data_set[0][1]))
+    print("REAL VALUE: " + str(labels_test[0]))
     print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
+
+    for i in range(0,len(labels_test)):
+        print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
+        #print("PREDICTED: " + str(np.argmax(predictions[0])))
     print("DONE!!!!")
