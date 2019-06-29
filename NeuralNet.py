@@ -61,6 +61,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
 
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Flatten())
+    #model.add(tf.keras.Input(tensor=features_train))
     #model.add(tf.keras.InputLayer(input_tensor=features_train))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
@@ -74,10 +75,10 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=10)
+    model.fit(features_train, labels_train, epochs=100)
 
     model.save("merck"+str(activity_to_predict)+".model")
-    new_model = tf.keras.models.load_model('merck.model')
+    new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")
     predictions = new_model.predict(features_test)
 
     print("REAL VALUE: " + str(data_set[0][1]))
