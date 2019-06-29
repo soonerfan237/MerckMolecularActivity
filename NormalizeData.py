@@ -29,9 +29,9 @@ def NormalizeData(data_directory):
             header_novel_zip = zip(header_novel, header_novel_values)
             feature_dict.update(dict(header_novel_zip))
 
-    fileObject = open(data_directory+"feature_dict.pickle",'wb') # open the file for writing
-    pickle.dump(feature_dict,fileObject)
-    fileObject.close()
+    #fileObject = open(data_directory+"feature_dict.pickle",'wb') # open the file for writing
+    #pickle.dump(feature_dict,fileObject)
+    #fileObject.close()
 
     print("READING IN PROPERTY AND ACTIVITY VALUES")
     #blank_feature_list = [0]*feature_index #by initializing to this, i am essentially imputing missing values with 0; maybe try other values here???? 0.5? mean of the feature?
@@ -70,3 +70,4 @@ def NormalizeData(data_directory):
             molecule_dict_csv_writer.writerow([molecule]+features[1]+features[0])
 
     print("DONE!")
+    return feature_dict, molecule_dict

@@ -6,12 +6,12 @@ import csv
 import random
 import tensorflow as tf
 
-def NeuralNet(data_directory, activity_to_predict):
+def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
-    fileObject = open(data_directory+"molecule_dict_filter.pickle",'rb')
-    molecule_dict_filter = pickle.load(fileObject)
-    fileObject.close()
+    # fileObject = open(data_directory+"molecule_dict_filter.pickle",'rb')
+    # molecule_dict_filter = pickle.load(fileObject)
+    # fileObject.close()
 
     data_set = []
     for molecule, values in molecule_dict_filter.items():
@@ -61,8 +61,13 @@ def NeuralNet(data_directory, activity_to_predict):
 
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+    #model.add(tf.keras.InputLayer(input_tensor=features_train))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
 
     model.compile(optimizer='adam',

@@ -5,37 +5,39 @@ import numpy as np
 from statistics import mean
 from statistics import median
 
-def FindFeatures(data_directory):
+def FindFeatures(data_directory, feature_dict, molecule_dict):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
-    fileObject = open(data_directory+"feature_dict.pickle",'rb')
-    feature_dict = pickle.load(fileObject)
-    fileObject.close()
-    print("# OF FEATURES: " + str(len(feature_dict)))
+    #fileObject = open(data_directory+"feature_dict.pickle",'rb')
+    #feature_dict = pickle.load(fileObject)
+    #fileObject.close()
 
-    molecule_dict = {}
-    with open(data_directory+"molecule_dict.csv", newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        header = next(reader)[1:]  # skipping header line
-        for i in range(len(header)):
-            for row in reader:
-                molecule_name = row[0]
-                molecule_activity = row[1:16]
-                molecule_features = row[17:]
-                print("# OF FEATURES FROM CSV: " + str(len(feature_dict)))
-                molecule_dict.update({molecule_name : [molecule_features,molecule_activity]})
+    # molecule_dict = {}
+    # with open(data_directory+"molecule_dict.csv", newline='') as csvfile:
+    #     reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
+    #     try:
+    #         next(reader)[1:]  # skipping header line
+    #     except Exception:
+    #         pass
+    #     #for i in range(len(header)):
+    #     for row in reader:
+    #         molecule_name = row[0]
+    #         molecule_activity = row[1:16]
+    #         molecule_features = row[17:]
+    #         #print("# OF FEATURES FROM CSV: " + str(len(molecule_features)))
+    #         #molecule_dict.update({molecule_name : [molecule_features,molecule_activity]})
 
     feature_dict_stdev = {}
     for feature, index in feature_dict.items():
         if feature not in feature_dict_stdev:
             feature_dict_stdev.update({feature: [index]})
 
-    fileObject = open(data_directory+"molecule_dict1.pickle",'rb')
-    molecule_dict = pickle.load(fileObject)
-    fileObject.close()
-    fileObject = open(data_directory + "molecule_dict2.pickle", 'rb')
-    molecule_dict.update(pickle.load(fileObject))
-    fileObject.close()
+    # fileObject = open(data_directory+"molecule_dict1.pickle",'rb')
+    # molecule_dict = pickle.load(fileObject)
+    # fileObject.close()
+    # fileObject = open(data_directory + "molecule_dict2.pickle", 'rb')
+    # molecule_dict.update(pickle.load(fileObject))
+    # fileObject.close()
 
     #the idea here is for each feature, to get a list of all values
     #then i can analyze the features and determine which have low or high variability
@@ -83,8 +85,11 @@ def FindFeatures(data_directory):
         for molecule, values in molecule_dict_filter.items():
             molecule_dict_filter[molecule][0].pop(featureIndexToRemove[i])
 
-    fileObject = open(data_directory+"molecule_dict_filter.pickle",'wb') # open the file for writing
-    pickle.dump(molecule_dict_filter,fileObject)
-    fileObject.close()
-
+    #fileObject = open(data_directory+"molecule_dict_filter.pickle",'wb') # open the file for writing
+    #pickle.dump(molecule_dict_filter,fileObject)
+    #fileObject.close()
+    print("TOTAL FEATURES: " + str(len(feature_dict)))
+    print("REMOVED FEATURES: " + str(len(featureIndexToRemove)))
+    print("REMAINING FEATURES: " + str(len(next(iter(molecule_dict_filter.values()))[0])))
     print("DONE!")
+    return molecule_dict_filter
