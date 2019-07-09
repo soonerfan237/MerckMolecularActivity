@@ -1,12 +1,13 @@
 import NormalizeData
 import FindFeatures
 import NeuralNet
+import ConvNeuralNet
 import glob
 import re
 
 def main():
 
-    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet8/"
+    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet4/"
     files = glob.glob(data_directory + "ACT*.csv")
     activity_list = []
     for file in files:
@@ -19,7 +20,7 @@ def main():
     molecule_dict_filter = FindFeatures.FindFeatures(data_directory, feature_dict, molecule_dict)
 
     for i in activity_list:
-    #for i in [4]:
-        NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
+        #NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
+        ConvNeuralNet.ConvNeuralNet(data_directory, i, molecule_dict_filter)
 
 main()

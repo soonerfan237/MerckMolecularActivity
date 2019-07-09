@@ -92,4 +92,6 @@ def FindFeatures(data_directory, feature_dict, molecule_dict):
     print("REMOVED FEATURES: " + str(len(featureIndexToRemove)))
     print("REMAINING FEATURES: " + str(len(next(iter(molecule_dict_filter.values()))[0])))
     print("DONE!")
+
+    # TODO: normalize distribution of remaining features, boxcox?
     return molecule_dict_filter

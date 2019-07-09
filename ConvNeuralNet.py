@@ -1,20 +1,12 @@
-import numpy as np
-#import os
-import pickle
-import glob
-import csv
-import random
 import tensorflow as tf
-import sklearn
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+import pickle
+import random
+import numpy as np
 from sklearn.metrics import r2_score
 
-def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
-    #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
-
-    # fileObject = open(data_directory+"molecule_dict_filter.pickle",'rb')
-    # molecule_dict_filter = pickle.load(fileObject)
-    # fileObject.close()
-
+def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     data_set = []
     for molecule, values in molecule_dict_filter.items():
         if values[1][activity_to_predict] is not None:
@@ -57,38 +49,45 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     labels_test = np.array(labels_test)
     labels_test = labels_test.astype(float)
 
-    #print("features_train type= " + str(type(features_train)))
-    #print("features_train shape= " + str(features_train.shape))
-    #print("labels_train type= " + str(type(labels_train)))
-    #print("labels_train shape= " + str(labels_train.shape))
+    #X = X/255.0
+    print("SHAPE")
+    print(features_train.shape)
+    model = Sequential()
+    #model.add(tf.keras.layers.Flatten())
+    #FIRST LAYER
+    #model.add(Conv2D(64, (3, 3)))
+    model.add(Conv2D(64, (3,3), input_shape=features_train.shape))
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2,2)))
 
-    model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Flatten())
-    #model.add(tf.keras.Input(tensor=features_train))
-    #model.add(tf.keras.InputLayer(input_tensor=features_train))
-    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
+    #SECOND LAYER
+    model.add(Conv2D(64, (3,3)))
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2,2)))
 
-    model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
+    #THIRD LAYER
+    model.add(Flatten())
+    model.add(Dense(64))
+
+    #OUTPUT LAYER
+    model.add(Dense(1))
+    model.add(Activation('sigmoid'))
+
+    model.compile(loss="categorical",
+                  optimizer="adam",
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=30)
+    model.fit(features_train, labels_train, batch_size=32, epochs=10, validation_split=0.1)
 
-    model.save("merck"+str(activity_to_predict)+".model")
-    new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")
+    model.save("merck" + str(activity_to_predict) + ".model")
+    new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
     predictions = new_model.predict(features_test)
 
     print("REAL VALUE: " + str(labels_test[0]))
     print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
 
     y_pred = []
-    for i in range(0,len(labels_test)):
+    for i in range(0, len(labels_test)):
         print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
         y_pred.append(np.argmax(predictions[i]))
 
