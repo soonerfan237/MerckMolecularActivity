@@ -7,6 +7,7 @@ import random
 import tensorflow as tf
 import sklearn
 from sklearn.metrics import r2_score
+from tensorflow.python.keras.utils import to_categorical
 
 def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
@@ -30,8 +31,8 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #print(features_length)
 
     # TODO: put higher proportion in training set
-    training_set = data_set[:int(len(data_set)/2)]
-    test_set = data_set[int(len(data_set)/2):]
+    training_set = data_set[:int(7*len(data_set)/10)]
+    test_set = data_set[int(7*len(data_set)/10):]
 
     features_train = []
     labels_train = []
@@ -50,12 +51,14 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     features_train = features_train.astype(float)
     labels_train = np.array(labels_train)
     labels_train = labels_train.astype(float)
+    #labels_train = to_categorical(labels_train)
 
     features_test = np.array(features_test)
     features_test = features_test.reshape(-1, 1, features_length)
     features_test = features_test.astype(float)
     labels_test = np.array(labels_test)
     labels_test = labels_test.astype(float)
+    #labels_test = to_categorical(labels_test)
 
     #print("features_train type= " + str(type(features_train)))
     #print("features_train shape= " + str(features_train.shape))
@@ -66,11 +69,11 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     model.add(tf.keras.layers.Flatten())
     #model.add(tf.keras.Input(tensor=features_train))
     #model.add(tf.keras.InputLayer(input_tensor=features_train))
+    model.add(tf.keras.layers.Dense(1000, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(1000, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
-    #model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
+    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
 
@@ -78,7 +81,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=30)
+    model.fit(features_train, labels_train, epochs=100, validation_data=(features_test,labels_test))
 
     model.save("merck"+str(activity_to_predict)+".model")
     new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")

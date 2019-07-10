@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, Conv1D, MaxPooling2D
 import pickle
 import random
 import numpy as np
@@ -54,30 +54,31 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     print(features_train.shape)
     model = Sequential()
     #model.add(tf.keras.layers.Flatten())
-    #FIRST LAYER
-    #model.add(Conv2D(64, (3, 3)))
-    model.add(Conv2D(64, (3,3), input_shape=features_train.shape))
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    #INPUT LAYER
+    #model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=features_train.shape))
+    model.add(Conv1D(8, kernel_size=(1), activation='relu', input_shape=(1, 862)))
+    #model.add(Conv1D(64, 3, input_shape=features_train.shape, activation='relu'))
+    #model.add(Activation("relu"))
+    #model.add(MaxPooling2D(pool_size=(2,2)))
 
     #SECOND LAYER
-    model.add(Conv2D(64, (3,3)))
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    #model.add(Conv2D(32, kernel_size=(3, 3)))
+    #model.add(Activation("relu"))
+    #model.add(MaxPooling2D(pool_size=(2,2)))
 
     #THIRD LAYER
     model.add(Flatten())
-    model.add(Dense(64))
+    #model.add(Dense(64))
 
     #OUTPUT LAYER
-    model.add(Dense(1))
+    model.add(Dense(10))
     model.add(Activation('sigmoid'))
 
-    model.compile(loss="categorical",
+    model.compile(loss="sparse_categorical_crossentropy",
                   optimizer="adam",
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, batch_size=32, epochs=10, validation_split=0.1)
+    model.fit(features_train, labels_train, batch_size=8, epochs=10, validation_split=0.1)
 
     model.save("merck" + str(activity_to_predict) + ".model")
     new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
