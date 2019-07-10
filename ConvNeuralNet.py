@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, Conv1D, MaxPooling2D
+from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, Conv1D, MaxPooling2D, MaxPooling1D
 import pickle
 import random
 import numpy as np
@@ -22,8 +22,8 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #print(features_length)
 
     # TODO: put higher proportion in training set
-    training_set = data_set[:int(len(data_set)/2)]
-    test_set = data_set[int(len(data_set)/2):]
+    training_set = data_set[:int(7*len(data_set)/10)]
+    test_set = data_set[int(7*len(data_set)/10):]
 
     features_train = []
     labels_train = []
@@ -56,29 +56,29 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #model.add(tf.keras.layers.Flatten())
     #INPUT LAYER
     #model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=features_train.shape))
-    model.add(Conv1D(8, kernel_size=(1), activation='relu', input_shape=(1, 862)))
-    #model.add(Conv1D(64, 3, input_shape=features_train.shape, activation='relu'))
-    #model.add(Activation("relu"))
-    #model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(1, 862)))
+    model.add(MaxPooling1D(pool_size=(1)))
 
     #SECOND LAYER
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(1, 862)))
+    model.add(MaxPooling1D(pool_size=(1)))
     #model.add(Conv2D(32, kernel_size=(3, 3)))
     #model.add(Activation("relu"))
     #model.add(MaxPooling2D(pool_size=(2,2)))
 
     #THIRD LAYER
     model.add(Flatten())
-    #model.add(Dense(64))
+    model.add(Dense(64))
 
     #OUTPUT LAYER
     model.add(Dense(10))
-    model.add(Activation('sigmoid'))
+    model.add(Activation('softmax'))
 
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer="adam",
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, batch_size=8, epochs=10, validation_split=0.1)
+    model.fit(features_train, labels_train, batch_size=32, epochs=5, validation_split=0.4)
 
     model.save("merck" + str(activity_to_predict) + ".model")
     new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
