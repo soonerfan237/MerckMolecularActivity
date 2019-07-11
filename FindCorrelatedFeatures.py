@@ -34,5 +34,10 @@ def FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_l
             molecule_feature = molecule_feature.astype(float)
             correlation[i][j] = np.corrcoef(molecule_activity, molecule_feature)[0,1]
             print(correlation[i][j])
+        correlation_sorted = np.array(correlation[i])
+        correlation_sorted = np.sort(np.absolute(correlation_sorted))
+        correlation_cutoff = correlation_sorted[5*len(correlation_sorted)/10]
+        correlation_cutoff = correlation_cutoff[0]
+
 
     return molecule_dict_filter
