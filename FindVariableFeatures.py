@@ -5,7 +5,7 @@ import numpy as np
 from statistics import mean
 from statistics import median
 
-def FindFeatures(data_directory, feature_dict, molecule_dict):
+def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
     #fileObject = open(data_directory+"feature_dict.pickle",'rb')
@@ -70,7 +70,7 @@ def FindFeatures(data_directory, feature_dict, molecule_dict):
     print(median(stdev_list))
     print("")
 
-    featPortion = int(len(feature_dict_stdev)*0.2)
+    featPortion = int(len(feature_dict_stdev)*0.5)
     stdev_list = sorted(stdev_list, key=float, reverse=True)
     stdevThreshold = stdev_list[featPortion]
 
@@ -85,11 +85,29 @@ def FindFeatures(data_directory, feature_dict, molecule_dict):
         for molecule, values in molecule_dict_filter.items():
             molecule_dict_filter[molecule][0].pop(featureIndexToRemove[i])
 
+    feature_dict_filter = {}
+    for feature, values in feature_dict_stdev.items():
+        if values[0] not in featureIndexToRemove:
+            feature_dict_filter.update({feature: values[0]})
+
     #fileObject = open(data_directory+"molecule_dict_filter.pickle",'wb') # open the file for writing
     #pickle.dump(molecule_dict_filter,fileObject)
     #fileObject.close()
+    feature_list = []
+    for feature, value in feature_dict_filter.items():
+        feature_list.append(feature)
+
+    with open(data_directory+"molecule_dict_filter.csv", mode='w') as molecule_dict_filter_csv:
+        molecule_dict_csv_writer = csv.writer(molecule_dict_filter_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        header_activity_list = ["ACT0","ACT1","ACT2","ACT3","ACT4","ACT5","ACT6","ACT7","ACT8","ACT9","ACT10","ACT11","ACT12","ACT13","ACT14","ACT15"]
+        molecule_dict_csv_writer.writerow(["molecule"]+header_activity_list+feature_list)
+        for molecule, features in molecule_dict_filter.items():
+            molecule_dict_csv_writer.writerow([molecule]+features[1]+features[0])
+
     print("TOTAL FEATURES: " + str(len(feature_dict)))
     print("REMOVED FEATURES: " + str(len(featureIndexToRemove)))
     print("REMAINING FEATURES: " + str(len(next(iter(molecule_dict_filter.values()))[0])))
     print("DONE!")
-    return molecule_dict_filter
+
+    # TODO: normalize distribution of remaining features, boxcox?
+    return feature_dict_filter, molecule_dict_filter
