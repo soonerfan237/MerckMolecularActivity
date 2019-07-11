@@ -56,11 +56,11 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #model.add(tf.keras.layers.Flatten())
     #INPUT LAYER
     #model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=features_train.shape))
-    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(1, 862)))
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(features_train.shape[1], features_train.shape[2])))
     model.add(MaxPooling1D(pool_size=(1)))
 
     #SECOND LAYER
-    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(1, 862)))
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=(1)))
     #model.add(Conv2D(32, kernel_size=(3, 3)))
     #model.add(Activation("relu"))
@@ -84,12 +84,12 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
     predictions = new_model.predict(features_test)
 
-    print("REAL VALUE: " + str(labels_test[0]))
-    print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
+    #print("REAL VALUE: " + str(labels_test[0]))
+    #print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
 
     y_pred = []
     for i in range(0, len(labels_test)):
-        print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
+        #print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
         y_pred.append(np.argmax(predictions[i]))
 
     y_true = np.array(labels_test)
