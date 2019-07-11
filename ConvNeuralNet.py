@@ -67,6 +67,14 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #model.add(MaxPooling2D(pool_size=(2,2)))
 
     #THIRD LAYER
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=(1)))
+
+    #FOURTH LAYER
+    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=(1)))
+
+    #FIFTH LAYER
     model.add(Flatten())
     model.add(Dense(64))
 
@@ -78,7 +86,7 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                   optimizer="adam",
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, batch_size=32, epochs=5, validation_split=0.4)
+    model.fit(features_train, labels_train, batch_size=32, epochs=50, validation_split=0.3)
 
     model.save("merck" + str(activity_to_predict) + ".model")
     new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")

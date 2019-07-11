@@ -5,7 +5,7 @@ import numpy as np
 from statistics import mean
 from statistics import median
 
-def FindFeatures(data_directory, feature_dict, molecule_dict):
+def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
     #fileObject = open(data_directory+"feature_dict.pickle",'rb')
@@ -70,7 +70,7 @@ def FindFeatures(data_directory, feature_dict, molecule_dict):
     print(median(stdev_list))
     print("")
 
-    featPortion = int(len(feature_dict_stdev)*0.2)
+    featPortion = int(len(feature_dict_stdev)*0.5)
     stdev_list = sorted(stdev_list, key=float, reverse=True)
     stdevThreshold = stdev_list[featPortion]
 
@@ -110,4 +110,4 @@ def FindFeatures(data_directory, feature_dict, molecule_dict):
     print("DONE!")
 
     # TODO: normalize distribution of remaining features, boxcox?
-    return molecule_dict_filter
+    return feature_dict_filter, molecule_dict_filter
