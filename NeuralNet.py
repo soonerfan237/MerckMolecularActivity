@@ -23,6 +23,8 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                 label = int(str(values[1][activity_to_predict])[0]) #TODO: come up with better grouping instead of just taking first digit
                 data = values[0]
                 data_set.append([data,label])
+            else:
+                print("found negative activity")
 
     random.shuffle(data_set)
 
