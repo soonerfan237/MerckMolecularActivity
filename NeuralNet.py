@@ -81,7 +81,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=100, validation_data=(features_test,labels_test))
+    model.fit(features_train, labels_train, epochs=20, validation_data=(features_test,labels_test))
 
     model.save("merck"+str(activity_to_predict)+".model")
     new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")

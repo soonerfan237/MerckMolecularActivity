@@ -21,7 +21,7 @@ def main():
     molecule_dict_filter = FindCorrelatedFeatures.FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_list)
 
     for i in activity_list:
-        NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
-        #ConvNeuralNet.ConvNeuralNet(data_directory, i, molecule_dict_filter)
+        #NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
+        ConvNeuralNet.ConvNeuralNet(data_directory, i, molecule_dict_filter)
 
 main()
