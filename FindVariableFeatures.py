@@ -70,7 +70,7 @@ def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
     print(median(stdev_list))
     print("")
 
-    featPortion = int(len(feature_dict_stdev)*0.5)
+    featPortion = int(7*len(feature_dict_stdev)/10)
     stdev_list = sorted(stdev_list, key=float, reverse=True)
     stdevThreshold = stdev_list[featPortion]
 

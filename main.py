@@ -8,7 +8,7 @@ import re
 
 def main():
 
-    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet4/"
+    data_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSet8/"
     files = glob.glob(data_directory + "ACT*.csv")
     activity_list = []
     for file in files:

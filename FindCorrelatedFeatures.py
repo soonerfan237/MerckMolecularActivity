@@ -33,11 +33,24 @@ def FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_l
             molecule_feature = np.array(molecule_features[j])
             molecule_feature = molecule_feature.astype(float)
             correlation[i][j] = np.corrcoef(molecule_activity, molecule_feature)[0,1]
-            print(correlation[i][j])
+            #print(correlation[i][j])
         correlation_sorted = np.array(correlation[i])
         correlation_sorted = np.sort(np.absolute(correlation_sorted))
-        correlation_cutoff = correlation_sorted[5*len(correlation_sorted)/10]
-        correlation_cutoff = correlation_cutoff[0]
+        correlation_cutoff = correlation_sorted[int(5*len(correlation_sorted)/10)]
 
+        featureIndexToRemove = []
+        correlation_abs = np.absolute(np.array(correlation[i]))
+        #test = range(len(correlation_abs)-1,0)
+        for j in reversed(range(len(correlation_abs))):
+            if correlation_abs[j] < correlation_cutoff:
+                featureIndexToRemove.append(j)
+        featureIndexToRemove = sorted(featureIndexToRemove, key=float, reverse=True)
+
+        for i in range(len(featureIndexToRemove)):
+            for molecule, values in molecule_dict_filter.items():
+                molecule_dict_filter[molecule][0].pop(featureIndexToRemove[i])
+
+        print("REMOVED FEATURES: " + str(len(featureIndexToRemove)))
+        print("REMAINING FEATURES: " + str(len(next(iter(molecule_dict_filter.values()))[0])))
 
     return molecule_dict_filter
