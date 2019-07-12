@@ -14,8 +14,9 @@ def NormalizeActivity(molecule_dict, activity_list):
 
     for i in activity_list:
         for molecule, features in molecule_dict.items():
-            for j in range(len(activity)):
-                if features[1][i] == activity[j]:
-                    features[1][i] = normalized_activity[j]
+            j=0
+            while features[1][i] != activity[j] and j < len(activity):
+                j+=1
+            features[1][i] = normalized_activity[j]
 
     return molecule_dict
