@@ -10,7 +10,7 @@ def NormalizeActivity(molecule_dict, activity_list):
             activity.append(features[1][i])
 
     activity = np.array(activity)
-    normalized_activity = minmax_scale(activity)
+    normalized_activity = minmax_scale(activity)*10
 
     for i in activity_list:
         for molecule, features in molecule_dict.items():
