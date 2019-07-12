@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from statistics import mean
 from statistics import median
-def NormalizeData(data_directory):
+def CombineData(data_directory):
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
     files = glob.glob(data_directory+"ACT*.csv")
     #this part will just read the header row of each file and store a dictionary of all unique feature names and give them all a unique index
