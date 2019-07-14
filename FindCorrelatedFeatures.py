@@ -7,6 +7,8 @@ from statistics import median
 
 def FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_list):
 
+    print("STARTING FindCorrelatedFeatures")
+
     correlation = []
     for i in range(0,16):
         correlation.append([])
@@ -52,5 +54,5 @@ def FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_l
 
         print("REMOVED FEATURES: " + str(len(featureIndexToRemove)))
         print("REMAINING FEATURES: " + str(len(next(iter(molecule_dict_filter.values()))[0])))
-
+        print("DONE!")
     return molecule_dict_filter

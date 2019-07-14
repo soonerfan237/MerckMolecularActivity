@@ -3,6 +3,8 @@ from sklearn.preprocessing import minmax_scale
 
 def NormalizeActivity(molecule_dict, activity_list):
 
+    print("STARTING NormalizeActivity")
+
     activity = []
 
     for i in activity_list:
@@ -19,4 +21,5 @@ def NormalizeActivity(molecule_dict, activity_list):
                 j+=1
             features[1][i] = normalized_activity[j]
 
+    print("DONE!")
     return molecule_dict

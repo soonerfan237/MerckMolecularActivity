@@ -6,6 +6,9 @@ import numpy as np
 from statistics import mean
 from statistics import median
 def CombineData(data_directory):
+
+    print("STARTING CombineData")
+
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
     files = glob.glob(data_directory+"ACT*.csv")
     #this part will just read the header row of each file and store a dictionary of all unique feature names and give them all a unique index
@@ -14,7 +17,7 @@ def CombineData(data_directory):
     feature_dict = {}
     feature_index = 0
     for file in files:
-        print(file)
+        #print(file)
         with open(file, newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             header = next(reader)[2:] #skipping header line
@@ -38,7 +41,7 @@ def CombineData(data_directory):
     #now ill read in the data from all files and store their features in a list across all datasets
     molecule_dict = {} #this has molecule name as key, then an array. the first index is an array of all features and the second is an array of all activities
     for file in files:
-        print(file)
+        #print(file)
         match = re.search(r'ACT([0-9]+)',file)
         activity_index = int(match.group(1))
         with open(file, newline='') as csvfile:

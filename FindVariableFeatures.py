@@ -6,6 +6,9 @@ from statistics import mean
 from statistics import median
 
 def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
+
+    print("STARTING FindVariableFeatures")
+
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
     #fileObject = open(data_directory+"feature_dict.pickle",'rb')
@@ -43,7 +46,6 @@ def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
     #then i can analyze the features and determine which have low or high variability
     #the features with highest variability will be best used in the model
 
-    print("GETTING STDEV LIST")
     stdev_list = []
     for feature, index in feature_dict.items():
         #print(feature)
@@ -55,20 +57,20 @@ def FindVariableFeatures(data_directory, feature_dict, molecule_dict):
         feature_dict_stdev[feature].append(stdev)
         stdev_list.append(stdev)
 
-    print("LEN STDEV: " + str(len(stdev_list)))
+    #print("LEN STDEV: " + str(len(stdev_list)))
     zero_count = 0
     for feature, values in feature_dict_stdev.items():
         #print(feature)
         if values[1] == 0:
             zero_count = zero_count + 1
-    print("ZERO COUNT: " + str(zero_count))
-    print("MAX STDEV")
-    print(max(stdev_list))
-    print("AVG STDEV")
-    print(mean(stdev_list))
-    print("MEDIAN STDEV")
-    print(median(stdev_list))
-    print("")
+    #print("ZERO COUNT: " + str(zero_count))
+    #print("MAX STDEV")
+    #print(max(stdev_list))
+    #print("AVG STDEV")
+    #print(mean(stdev_list))
+    #print("MEDIAN STDEV")
+    #print(median(stdev_list))
+    #print("")
 
     featPortion = int(7*len(feature_dict_stdev)/10)
     stdev_list = sorted(stdev_list, key=float, reverse=True)

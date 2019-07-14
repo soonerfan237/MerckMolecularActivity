@@ -2,6 +2,7 @@ import CombineData
 import NormalizeActivity
 import FindVariableFeatures
 import FindCorrelatedFeatures
+import RemoveOutliers
 import NeuralNet
 import ConvNeuralNet
 import glob
@@ -21,6 +22,7 @@ def main():
     molecule_dict = NormalizeActivity.NormalizeActivity(molecule_dict, activity_list)
     feature_dict_filter, molecule_dict_filter = FindVariableFeatures.FindVariableFeatures(data_directory, feature_dict, molecule_dict)
     molecule_dict_filter = FindCorrelatedFeatures.FindCorrelatedFeatures(feature_dict_filter, molecule_dict_filter, activity_list)
+    #molecule_dict_filter = RemoveOutliers.RemoveOutliers(molecule_dict_filter)
 
     for i in activity_list:
         NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
