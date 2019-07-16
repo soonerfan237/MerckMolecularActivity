@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from sklearn.metrics import r2_score
 import tensorflow as tf
 from tensorflow.python.keras.models import Model,Sequential
 from tensorflow.python.keras.layers import Dense, Dropout, Input
@@ -51,11 +52,13 @@ def gan_model(discriminator, generator, shape):
 def generate_molecule(shape, generator, examples=100):
     random_noise = np.random.normal(loc=0, scale=1, size=[examples, shape])
     generated_molecules = generator.predict(random_noise)
+    generated_molecules = np.array(generated_molecules)
+    generated_molecules = np.reshape(generated_molecules, (generated_molecules.shape[0], generated_molecules.shape[1]))
     return generated_molecules
 
-def predict_generated_molecule(features_test, activity_to_predict):
-    new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
-    predictions = new_model.predict(features_test)
+def predict_generated_molecule(generated_data, discriminator):
+    #new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
+    predictions = discriminator.predict(generated_data)
     return predictions
 
 def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_dict_filter, epochs):
@@ -134,11 +137,11 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
         discriminator.trainable = False #but we don't want to discriminator function to change here, we're just evaluating it
         #gan.train_on_batch(random_noise, labels_eval) #sending the faked data to the gan
         gan_results = gan.fit(random_noise, labels_eval)  # sending the faked data to the gan
-        print("test")
 
-    generated_data = generate_molecule(shape, generator)
-    generated_data = np.reshape(generated_data, (generated_data.shape[0], 1, generated_data.shape[1]))
-    predictions = predict_generated_molecule(generated_data, activity_to_predict)
+        generated_data = generate_molecule(shape, generator)
+        predictions = predict_generated_molecule(generated_data, discriminator)
+        r_squared = r2_score([0]*len(predictions), predictions)
+        print("DISCRIMINATOR R2 = " + str(r_squared))
 
     print("DONE!")
-    return generated_data, predictions
+    #return generated_data, predictions

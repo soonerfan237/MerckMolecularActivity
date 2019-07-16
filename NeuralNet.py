@@ -79,9 +79,7 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
 
-    model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
+    model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
     model.fit(features_train, labels_train, epochs=20, validation_data=(features_test,labels_test))
 
