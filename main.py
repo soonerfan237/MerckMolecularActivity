@@ -27,9 +27,9 @@ def main():
     #molecule_dict_filter = RemoveOutliers.RemoveOutliers(molecule_dict_filter)
 
     for i in activity_list:
-        #NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
+        NeuralNet.NeuralNet(data_directory, i, molecule_dict_filter) #i corresponds to activity number to predict
         #ConvNeuralNet.ConvNeuralNet(data_directory, i, molecule_dict_filter)
-        GenerativeAdversarialNetwork.GenerativeAdversarialNetwork(data_directory, i, molecule_dict_filter)
+        generated_data, predictions = GenerativeAdversarialNetwork.GenerativeAdversarialNetwork(data_directory, i, molecule_dict_filter, 2)
     elapsed_time = time.time() - start_time
     print(elapsed_time)
     print("DONE!")
