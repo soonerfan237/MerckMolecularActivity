@@ -103,7 +103,7 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
     #labels_test = np.array(labels_test)
     #labels_test = labels_test.astype(float)
 
-    batch_size = 128
+    batch_size = features_train.shape[0]
     shape = features_train.shape[2]
 
     generator = generator_model(shape)
@@ -112,6 +112,7 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
 
     for e in range(epochs):
         print("Epoch " + str(e+1) + "/" + str(epochs))
+        # TRAINING THE DISCRIMINATOR
         #generating fake molecules with the generator
         random_noise = np.random.normal(0, 1, [batch_size, shape]) #initializing with random data
         generated_molecules = generator.predict(random_noise) #generating molecular features from random data
@@ -124,13 +125,16 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
         #so we're telling the discriminator straight up which data is real and fake and letting it learn on that
         labels_fakereal_train = np.concatenate([[1]*batch_size,[0]*batch_size]) #the labels for the first half are 1 because they are real molecules, then 0 for the fake molecules
         discriminator.trainable = True
-        discriminator.train_on_batch(features_fakereal_train, labels_fakereal_train) #TRAINING THE DISCRIMINATOR on how to detect fake vs real data
+        #discriminator.train_on_batch(features_fakereal_train, labels_fakereal_train) #TRAINING THE DISCRIMINATOR on how to detect fake vs real data
+        discriminator_results = discriminator.fit(features_fakereal_train,labels_fakereal_train)  # TRAINING THE DISCRIMINATOR on how to detect fake vs real data
 
-        #TRAINING THE GAN (AT LEAST THE GENERATOR PORTION OF THE GAN)
+        #TRAINING THE GENERATOR
         random_noise = np.random.normal(0, 1, [batch_size, shape]) #now we're generating fake data
         labels_eval = np.ones(batch_size) #but giving it a label of 1, so we're lying to the discriminator and saying it's real data
         discriminator.trainable = False #but we don't want to discriminator function to change here, we're just evaluating it
-        gan.train_on_batch(random_noise, labels_eval) #sending the faked data to the gan
+        #gan.train_on_batch(random_noise, labels_eval) #sending the faked data to the gan
+        gan_results = gan.fit(random_noise, labels_eval)  # sending the faked data to the gan
+        print("test")
 
     generated_data = generate_molecule(shape, generator)
     generated_data = np.reshape(generated_data, (generated_data.shape[0], 1, generated_data.shape[1]))
