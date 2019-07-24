@@ -10,6 +10,7 @@ from sklearn.metrics import r2_score
 from tensorflow.python.keras.utils import to_categorical
 
 def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
+    print("STARTING NeuralNet")
     #training_directory = "/Users/soonerfan237/Desktop/MerckActivity/TrainingSUBSet/"
 
     # fileObject = open(data_directory+"molecule_dict_filter.pickle",'rb')
@@ -19,8 +20,8 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     data_set = []
     for molecule, values in molecule_dict_filter.items():
         if values[1][activity_to_predict] is not None:
-            if str(values[1][activity_to_predict])[0] != '-': #TODO: handle negative activity levels
-                label = int(str(values[1][activity_to_predict])[0]) #TODO: come up with better grouping instead of just taking first digit
+            if str(values[1][activity_to_predict])[0] != '-':
+                label = int(str(values[1][activity_to_predict])[0])
                 data = values[0]
                 data_set.append([data,label])
             else:
@@ -32,7 +33,6 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     features_length = len(data_set[0][0])
     #print(features_length)
 
-    # TODO: put higher proportion in training set
     training_set = data_set[:int(7*len(data_set)/10)]
     test_set = data_set[int(7*len(data_set)/10):]
 
@@ -81,18 +81,18 @@ def NeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
 
     model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-    model.fit(features_train, labels_train, epochs=20, validation_data=(features_test,labels_test))
+    model.fit(features_train, labels_train, epochs=5, validation_data=(features_test,labels_test))
 
     model.save("merck"+str(activity_to_predict)+".model")
     new_model = tf.keras.models.load_model("merck"+str(activity_to_predict)+".model")
     predictions = new_model.predict(features_test)
-
-    print("REAL VALUE: " + str(labels_test[0]))
-    print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
-
+    new_model.summary()
+    #print("REAL VALUE: " + str(labels_test[0]))
+    #print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
+    print(predictions[0])
     y_pred = []
     for i in range(0,len(labels_test)):
-        print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
+        #print("REAL: " + str(labels_test[i]) + " | PREDICTED: " + str(np.argmax(predictions[i])))
         y_pred.append(np.argmax(predictions[i]))
 
     y_true = np.array(labels_test)

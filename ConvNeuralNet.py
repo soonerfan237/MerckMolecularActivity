@@ -7,11 +7,12 @@ import numpy as np
 from sklearn.metrics import r2_score
 
 def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
+    print("STARTING ConvNeuralNet")
     data_set = []
     for molecule, values in molecule_dict_filter.items():
         if values[1][activity_to_predict] is not None:
-            if str(values[1][activity_to_predict])[0] != '-': #TODO: handle negative activity levels
-                label = int(str(values[1][activity_to_predict])[0]) #TODO: come up with better grouping instead of just taking first digit
+            if str(values[1][activity_to_predict])[0] != '-':
+                label = int(str(values[1][activity_to_predict])[0])
                 data = values[0]
                 data_set.append([data,label])
 
@@ -21,7 +22,7 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     features_length = len(data_set[0][0])
     #print(features_length)
 
-    # TODO: put higher proportion in training set
+
     training_set = data_set[:int(7*len(data_set)/10)]
     test_set = data_set[int(7*len(data_set)/10):]
 
@@ -56,11 +57,11 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     #model.add(tf.keras.layers.Flatten())
     #INPUT LAYER
     #model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=features_train.shape))
-    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same', input_shape=(features_train.shape[1], features_train.shape[2])))
+    model.add(Conv1D(50, kernel_size=(100), activation='relu', padding='same', input_shape=(features_train.shape[1], features_train.shape[2])))
     model.add(MaxPooling1D(pool_size=(1)))
 
     #SECOND LAYER
-    model.add(Conv1D(32, kernel_size=(30), activation='relu', padding='same'))
+    model.add(Conv1D(20, kernel_size=(30), activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=(1)))
     #model.add(Conv2D(32, kernel_size=(3, 3)))
     #model.add(Activation("relu"))
@@ -91,7 +92,7 @@ def ConvNeuralNet(data_directory, activity_to_predict, molecule_dict_filter):
     model.save("merck" + str(activity_to_predict) + ".model")
     new_model = tf.keras.models.load_model("merck" + str(activity_to_predict) + ".model")
     predictions = new_model.predict(features_test)
-
+    new_model.summary()
     #print("REAL VALUE: " + str(labels_test[0]))
     #print("PREDICTED VALUE: " + str(np.argmax(predictions[0])))
 

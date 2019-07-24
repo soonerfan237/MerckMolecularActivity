@@ -11,8 +11,10 @@ def NormalizeActivity(molecule_dict, activity_list):
         for molecule, features in molecule_dict.items():
             activity.append(features[1][i])
 
-    activity = np.array(activity)
-    normalized_activity = minmax_scale(activity)*10
+    normalized_activity = np.array(activity)
+    normalized_activity = normalized_activity.astype(float)
+    #normalized_activity = normalized_activity / np.sqrt(np.sum(normalized_activity ** 2))
+    normalized_activity = minmax_scale(normalized_activity)*10
 
     for i in activity_list:
         for molecule, features in molecule_dict.items():

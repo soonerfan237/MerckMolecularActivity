@@ -67,8 +67,8 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
     data_set = []
     for molecule, values in molecule_dict_filter.items():
         if values[1][activity_to_predict] is not None:
-            if str(values[1][activity_to_predict])[0] != '-':  # TODO: handle negative activity levels
-                label = int(str(values[1][activity_to_predict])[0])  # TODO: come up with better grouping instead of just taking first digit
+            if str(values[1][activity_to_predict])[0] != '-':
+                label = int(str(values[1][activity_to_predict])[0])
                 data = values[0]
                 data_set.append([data, label])
 
@@ -78,7 +78,6 @@ def GenerativeAdversarialNetwork(data_directory, activity_to_predict, molecule_d
     features_length = len(data_set[0][0])
     # print(features_length)
 
-    # TODO: put higher proportion in training set
     #training_set = data_set[:int(7 * len(data_set) / 10)]
     #test_set = data_set[int(7 * len(data_set) / 10):]
 
